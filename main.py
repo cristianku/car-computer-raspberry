@@ -66,7 +66,7 @@ print (" Initializing video capture")
 
 i = 0
 
-output_data = [['time', 'filename',                 \
+output_data = [['filename',                 \
                 'throttle_position',        \
                 'steering_angle',           \
                 'speed',                    \
@@ -96,7 +96,6 @@ print " ######"
 print " Starting while ..."
 print " ######"
 print " ######"
-number_of_cycle
 # while cap.isOpened() and i < 100:
 while i < number_of_cycle and obdConn.connected :
     i = i + 1
@@ -120,7 +119,7 @@ while i < number_of_cycle and obdConn.connected :
     time_before = time.time()
 
     speed               = obdConn.speed
-    # print speed
+    print speed
     if speed == None or str(speed) == "None":
         print " Macchina spenta !!!!"
         break
@@ -149,7 +148,7 @@ while i < number_of_cycle and obdConn.connected :
     # print "time for writing " + str ( time_writing)
 
 
-    output_data.append(time.time(), [filename,throttle_position, steering_angle, str(speed), \
+    output_data.append([filename,throttle_position, steering_angle, str(speed), \
                         str(fuel_level),str(voltage),str(ambient_temp), \
                         str(oil_temperature),   \
                         str(accelerator_b),     \
