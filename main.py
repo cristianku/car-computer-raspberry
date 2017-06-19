@@ -97,7 +97,7 @@ print " Starting while ..."
 print " ######"
 print " ######"
 # while cap.isOpened() and i < 100:
-while i < number_of_cycle and obdConn.connected :
+while  obdConn.connected :
     i = i + 1
     # time.sleep(.1)
     # Read first frame
