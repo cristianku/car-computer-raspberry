@@ -47,6 +47,11 @@ def resize(folder, fileName):
     cv2.imwrite(filePath, resized_image)
 
 
+def find_uglies():
+    for file_type in ['neg']
+        for img in os.listdir((file_type)):
+            for ugly in os.listdir('uglies')
+
 def bulkResize(imageFolder):
     imgExts = ["png", "bmp", "jpg"]
     for path, dirs, files in os.walk(imageFolder):

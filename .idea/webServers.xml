@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="295db0e4-92e5-4a35-9fda-eba9ca33aa00" name="raspy" url="http://raspy">
+        <fileTransfer host="raspy" port="22" rootFolder="/home/pi" accessType="SFTP" password="dfcb" username="pi">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
