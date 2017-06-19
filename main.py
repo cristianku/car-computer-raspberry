@@ -1,3 +1,6 @@
+# http://obdcon.sourceforge.net/2010/06/obd-ii-pids/
+
+
 #
 # print " ################## "
 # print " Connecting to RFCOMM "
@@ -25,8 +28,6 @@ from picamera import PiCamera
 
 print " Importing numpy ...."
 import numpy as np
-print " Importing  pandas ...."
-import pandas as pd
 print " Importing  obd2Reader ...."
 import obd2Reader
 print " .. ok "
@@ -107,11 +108,9 @@ output_data = [['filename',                 \
                 'AMBIANT_AIR_TEMP',         \
                 'oil_temperature',          \
                 'accelerator_b',            \
-                'accelerator_c',            \
                 'accelerator_d',            \
-                'accelerator_e',            \
-                'accelerator_f',            \
                 'throttle  ',               \
+                'engine run time',          \
                 'time_frame',               \
                 'time_OBD']]
 
@@ -122,9 +121,7 @@ print " Starting while ..."
 print " ######"
 print " ######"
 # while cap.isOpened() and i < 100:
-
-while i < number_of_cycle:
-    if i % 1 == 0 : print (" reading number = " + str(i))
+while i < number_of_cycle and obdConn.connected :
     i = i + 1
     # time.sleep(.1)
     # Read first frame
@@ -141,17 +138,18 @@ while i < number_of_cycle:
     throttle_position = 0
     steering_angle = 1
     time_before = time.time()
-    fuel_level          = obdConn.fuel_level
     speed               = obdConn.speed
+    print speed
+    if speed == None or str(speed) == "None": break
+
+    fuel_level          = obdConn.fuel_level
     voltage             = obdConn.voltage
     ambient_temp        = obdConn.ambiant_air_temp
     oil_temperature     = obdConn.oil_temp
     accelerator_b       = obdConn.throttle_b   # response = connection.query(RELATIVE_ACCEL_POS, force=True)
-    accelerator_c       = obdConn.throttle_c  # response = connection.query(RELATIVE_ACCEL_POS, force=True)
     accelerator_d       = obdConn.accelerator_d  # response = connection.query(RELATIVE_ACCEL_POS, force=True)
-    accelerator_e       = obdConn.accelerator_e  # response = connection.query(RELATIVE_ACCEL_POS, force=True)
-    accelerator_f       = obdConn.accelerator_f  # response = connection.query(RELATIVE_ACCEL_POS, force=True)
     throttle            = obdConn.throttle_act
+    run_time            = obdConn.run_time
 
 
     # accelerator = response.value
@@ -167,14 +165,14 @@ while i < number_of_cycle:
 
     output_data.append([filename,throttle_position, steering_angle, str(speed), \
                         str(fuel_level),str(voltage),str(ambient_temp), \
-                        str(oil_temperature), \
-                        str(accelerator_b), \
-                        str(accelerator_c), \
-                        str(accelerator_d), \
-                        str(accelerator_e), \
-                        str(accelerator_f), \
-                        str(throttle), \
+                        str(oil_temperature),   \
+                        str(accelerator_b),     \
+                        str(accelerator_d),     \
+                        str(throttle),          \
+                        str(run_time),          \
                         str(time_frame), str(time_OBD)])
+
+    if i % 10 == 0: print " reading number = " + str(i) + " engine run time " + str(run_time)
 
 obdConn.close()
 
@@ -182,5 +180,7 @@ obdConn.close()
 # cap.release()
 # # out.release()
 # # cv2.destroyAllWindows()
+import pandas as pd
+
 df = pd.DataFrame(np.array(output_data))
 df.to_csv("car_output_data.csv")

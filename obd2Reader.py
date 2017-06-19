@@ -7,6 +7,11 @@ class obd2Reader():
     def __init__(self):
 
         self._connection = obd.OBD()  # auto-connects to USB or RF port
+        if self._connection.status() == OBDStatus.NOT_CONNECTED:
+            self.connected = False
+        else:
+            self.connected = True
+
         # print " ********* "
         # print " ********* "
         # print " ********* "
@@ -35,6 +40,13 @@ class obd2Reader():
         self._cmd_ACCELERATOR_POS_E         = obd.commands.ACCELERATOR_POS_E
         self._cmd_ACCELERATOR_POS_F         = obd.commands.ACCELERATOR_POS_F
         self._cmd_THROTTLE_ACTUATOR         = obd.commands.THROTTLE_ACTUATOR
+        self._cmd_RUN_TIME                  = obd.commands.RUN_TIME
+
+
+    @property
+    def run_time(self):
+        self._run_time = self.executeCommand(self._cmd_RUN_TIME)
+        return self._run_time
 
     @property
     def throttle_act(self):

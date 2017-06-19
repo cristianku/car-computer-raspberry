@@ -169,14 +169,14 @@ import numpy as np
 
 
 
-from espeak import espeak
-
-espeak.set_voice("!v/f5")
-
-espeak.synth("Hi Cristian, Welcome on board, of your BMW !")
-
-while espeak.is_playing:
-	pass
+# from espeak import espeak
+#
+# espeak.set_voice("!v/f5")
+#
+# espeak.synth("Hi Cristian, Welcome on board, of your BMW !")
+#
+# while espeak.is_playing:
+# 	pass
 
 
 connection = obd.OBD()  # auto-connects to USB or RF port
