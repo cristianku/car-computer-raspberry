@@ -6,7 +6,7 @@ from picamera import PiCamera
 
 import numpy as np
 import pandas as pd
-
+import obd2Reader
 
 # print str(sys.argv[1])
 
@@ -17,29 +17,6 @@ print " ################## "
 print " "
 
 
-#
-# 0. CV_CAP_PROP_POS_MSEC Current position of the video file in milliseconds.
-# 1. CV_CAP_PROP_POS_FRAMES 0-based index of the frame to be decoded/captured next.
-# 3. CV_CAP_PROP_POS_AVI_RATIO Relative position of the video file
-# 4. CV_CAP_PROP_FRAME_WIDTH Width of the frames in the video stream.
-# 5. CV_CAP_PROP_FRAME_HEIGHT Height of the frames in the video stream.
-# 6. CV_CAP_PROP_FPS Frame rate.
-# 7. CV_CAP_PROP_FOURCC 4-character code of codec.
-# 8. CV_CAP_PROP_FRAME_COUNT Number of frames in the video file.
-# 9. CV_CAP_PROP_FORMAT Format of the Mat objects returned by retrieve() .
-# 10. CV_CAP_PROP_MODE Backend-specific value indicating the current capture mode.
-# 11. CV_CAP_PROP_BRIGHTNESS Brightness of the image (only for cameras).
-# 12. CV_CAP_PROP_CONTRAST Contrast of the image (only for cameras).
-# 13. CV_CAP_PROP_SATURATION Saturation of the image (only for cameras).
-# 14. CV_CAP_PROP_HUE Hue of the image (only for cameras).
-# 15. CV_CAP_PROP_GAIN Gain of the image (only for cameras).
-# 16. CV_CAP_PROP_EXPOSURE Exposure (only for cameras).
-# 17. CV_CAP_PROP_CONVERT_RGB Boolean flags indicating whether images should be converted to RGB.
-# 18. CV_CAP_PROP_WHITE_BALANCE Currently unsupported
-# 19. CV_CAP_PROP_RECTIFICATION Rectification flag for stereo cameras (note: only supported by DC1394 v 2.x backend currently)
-
-
-
 # from espeak import espeak
 #
 # espeak.set_voice("!v/f5")
@@ -48,10 +25,6 @@ print " "
 #
 # while espeak.is_playing:
 # 	pass
-
-print (" Importing OBD")
-import obd
-print ("           ... OK")
 
 
 
@@ -87,6 +60,10 @@ print ("           ... OK")
 # sudo apt-get install v4l-utils
 
 
+print (" Creating obd2Reader .....")
+obdConn = obd2Reader.obd2Reader()
+print ("           ... OK")
+
 
 # # Initiate video capture for video file
 print (" Initializing video capture")
@@ -112,13 +89,6 @@ output_data = [['filename',\
                 'time_frame',\
                 'time_OBD']]
 
-connection = obd.OBD()  # auto-connects to USB or RF port
-cmd_speed = obd.commands.SPEED  # select an OBD command (sensor)
-cmd_FUEL_LEVEL = obd.commands.FUEL_LEVEL
-CONTROL_MODULE_VOLTAGE = obd.commands.CONTROL_MODULE_VOLTAGE
-AMBIANT_AIR_TEMP = obd.commands.AMBIANT_AIR_TEMP
-OIL_TEMP = obd.commands.OIL_TEMP
-RELATIVE_ACCEL_POS =  obd.commands.RELATIVE_ACCEL_POS
 
 print " ######"
 print " ######"
@@ -128,7 +98,7 @@ print " ######"
 # while cap.isOpened() and i < 100:
 
 while i < number_of_cycle:
-
+    if i % 10 == 0 : print (" reading number = " + str(i))
     i = i + 1
     time.sleep(.1)
     # Read first frame
@@ -145,20 +115,15 @@ while i < number_of_cycle:
     throttle_position = 0
     steering_angle = 1
     time_before = time.time()
-    response = connection.query(cmd_FUEL_LEVEL, force=True)
-    fuel_level = response.value
-    response = connection.query(cmd_speed, force=True)
-    speed = response.value
-    response = connection.query(CONTROL_MODULE_VOLTAGE, force=True)
-    voltage = response.value
-    response = connection.query(AMBIANT_AIR_TEMP, force=True)
-    ambient_temp = response.value
-    response = connection.query(OIL_TEMP, force=True)
-    oil_temperature = response.value
+    fuel_level          = obdConn.fuel_level
+    speed               = obdConn.speed
+    voltage             = obdConn.voltage
+    ambient_temp        = obdConn.ambiant_air_temp
+    oil_temperature     = obdConn.oil_temp
 
-    response = connection.query(RELATIVE_ACCEL_POS, force=True)
-    accelerator = response.value
-
+    # response = connection.query(RELATIVE_ACCEL_POS, force=True)
+    # accelerator = response.value
+    accelerator = 0
 
     time_OBD = time.time() - time_before
 
@@ -173,7 +138,7 @@ while i < number_of_cycle:
                         str(oil_temperature),str(accelerator), \
                         str(time_frame), str(time_OBD)])
 
-connection.close()
+obdConn.close()
 
 
 # cap.release()
