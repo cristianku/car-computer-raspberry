@@ -1,11 +1,21 @@
 import cv2
-
+import sys
 import time
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 
 import numpy as np
 import pandas as pd
+
+
+print str(sys.argv[1])
+
+number_of_cycle = int(sys.argv[1])
+print " ################## "
+print " ##### NUMBER OF CYCLES : " + str(number_of_cycle)
+print " ################## "
+print " "
+
 
 #
 # 0. CV_CAP_PROP_POS_MSEC Current position of the video file in milliseconds.
@@ -116,7 +126,8 @@ print " Starting while ..."
 print " ######"
 print " ######"
 # while cap.isOpened() and i < 100:
-while i < 5:
+
+while i < number_of_cycle:
 
     i = i + 1
     time.sleep(.1)
