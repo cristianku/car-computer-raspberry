@@ -57,7 +57,7 @@ print ("           ... OK")
 import camera
 
 print (" Creating camera .....")
-camera_connection = camera.camera()
+# camera_connection = camera.camera()
 
 # # Initiate video capture for video file
 print (" Initializing video capture")
@@ -66,7 +66,7 @@ print (" Initializing video capture")
 
 i = 0
 
-output_data = [['filename',                 \
+output_data = [['time', 'filename',                 \
                 'throttle_position',        \
                 'steering_angle',           \
                 'speed',                    \
@@ -80,31 +80,50 @@ output_data = [['filename',                 \
                 'engine run time',          \
                 'time_frame',               \
                 'time_OBD']]
+from  picamera import PiCamera
+from picamera.array import PiRGBArray
 
+# camera = PiCamera()
+# rawCapture = PiRGBArray(camera)
+
+from camera import camera
+camera = camera()
+# allow the camera to warmup
+time.sleep(0.1)
 
 print " ######"
 print " ######"
 print " Starting while ..."
 print " ######"
 print " ######"
+number_of_cycle
 # while cap.isOpened() and i < 100:
-while i < number_of_cycle : #and obdConn.connected :
+while i < number_of_cycle and obdConn.connected :
     i = i + 1
     # time.sleep(.1)
     # Read first frame
     time_before = time.time()
     # grab an image from the camera
-    camera_connection.capture()
+    # camera_connection.capture()
+
+    camera.capture()
+
     time_frame = time.time() - time_before
-    print " time to grab a new image " + str(time_frame)
+    # print " time to grab a new image " + str(time_frame)
+    # rawCapture.truncate(0)
+    # camera.capture(rawCapture, format="bgr")
+    # image = rawCapture.array
 
     filename = 'img/photo_' + str(i)  + '.jpg'
     throttle_position = 0
     steering_angle = 1
     time_before = time.time()
+
     speed               = obdConn.speed
-    print speed
-    if speed == None or str(speed) == "None": break
+    # print speed
+    if speed == None or str(speed) == "None":
+        print " Macchina spenta !!!!"
+        break
 
     fuel_level          = obdConn.fuel_level
     voltage             = obdConn.voltage
@@ -123,12 +142,14 @@ while i < number_of_cycle : #and obdConn.connected :
 
     # print (" speed = " + str(speed) +  " fuel level = " + str(fuel_level)+" file= " + filename) + " time frame " + str(time_frame ) + " time speed" + str(time_OBD)
     time_before= time.time()
-    camera_connection.write_image()
+    # camera_connection.capture()
+    camera.write_image()
+
     time_writing = time.time() - time_before
-    print "time for writing " + str ( time_writing)
+    # print "time for writing " + str ( time_writing)
 
 
-    output_data.append([filename,throttle_position, steering_angle, str(speed), \
+    output_data.append(time.time(), [filename,throttle_position, steering_angle, str(speed), \
                         str(fuel_level),str(voltage),str(ambient_temp), \
                         str(oil_temperature),   \
                         str(accelerator_b),     \
@@ -139,13 +160,26 @@ while i < number_of_cycle : #and obdConn.connected :
 
     if i % 10 == 0: print " reading number = " + str(i) + " engine run time " + str(run_time)
 
+print " Obd connection closing..."
 obdConn.close()
 
+while camera.images_queue :
+    time.sleep ( 0.3)
+    print " "
+    print " Waiting for the images from the buffer ...."
+    print " "
+    if camera.red_light == False:
+        print " ****************************************"
+        print " Writing the images from buffer ...."
+        print " ****************************************"
+        camera.write_image_to_file()
 
 # cap.release()
 # # out.release()
 # # cv2.destroyAllWindows()
+print " Import Pandas..."
 import pandas as pd
 
 df = pd.DataFrame(np.array(output_data))
 df.to_csv("car_output_data.csv")
+print "car_output_data.csv written"
