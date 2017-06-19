@@ -1,13 +1,35 @@
+#
+# print " ################## "
+# print " Connecting to RFCOMM "
+# from subprocess import Popen, PIPE
+#
+# cmd = 'sudo rfcomm connect 0  00:1D:A5:68:98:8A &'
+# p = Popen(cmd , shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+# output, err = p.communicate()
+# rc = p.returncode
+#
+# print " ... connected - return code = " + str(rc) + " " + str( err) + str(output)
+#
+# exit()
+#
+print " Importing cv2 ...."
 import cv2
+print " Importing sys ...."
 import sys
+print " Importing time ...."
 import time
+print " Importing PiRGBArray ...."
 from picamera.array import PiRGBArray
+print " Importing PiCamera ...."
 from picamera import PiCamera
 
+print " Importing numpy ...."
 import numpy as np
+print " Importing  pandas ...."
 import pandas as pd
+print " Importing  obd2Reader ...."
 import obd2Reader
-
+print " .. ok "
 # print str(sys.argv[1])
 
 number_of_cycle = int(sys.argv[1])
@@ -15,7 +37,6 @@ print " ################## "
 print " ##### NUMBER OF CYCLES : " + str(number_of_cycle)
 print " ################## "
 print " "
-
 
 # from espeak import espeak
 #
@@ -77,16 +98,21 @@ time.sleep(0.1)
 
 i = 0
 
-output_data = [['filename',\
-                'throttle_position', \
-                'steering_angle',\
-                'speed',\
-                'fuel level',\
-                'CONTROL_MODULE_VOLTAGE',\
-                'AMBIANT_AIR_TEMP',\
-                'oil_temperature',\
-                'accelerator',\
-                'time_frame',\
+output_data = [['filename',                 \
+                'throttle_position',        \
+                'steering_angle',           \
+                'speed',                    \
+                'fuel level',               \
+                'CONTROL_MODULE_VOLTAGE',   \
+                'AMBIANT_AIR_TEMP',         \
+                'oil_temperature',          \
+                'accelerator_b',            \
+                'accelerator_c',            \
+                'accelerator_d',            \
+                'accelerator_e',            \
+                'accelerator_f',            \
+                'throttle  ',               \
+                'time_frame',               \
                 'time_OBD']]
 
 
@@ -98,9 +124,9 @@ print " ######"
 # while cap.isOpened() and i < 100:
 
 while i < number_of_cycle:
-    if i % 10 == 0 : print (" reading number = " + str(i))
+    if i % 1 == 0 : print (" reading number = " + str(i))
     i = i + 1
-    time.sleep(.1)
+    # time.sleep(.1)
     # Read first frame
     time_before = time.time()
     # grab an image from the camera
@@ -120,8 +146,14 @@ while i < number_of_cycle:
     voltage             = obdConn.voltage
     ambient_temp        = obdConn.ambiant_air_temp
     oil_temperature     = obdConn.oil_temp
+    accelerator_b       = obdConn.throttle_b   # response = connection.query(RELATIVE_ACCEL_POS, force=True)
+    accelerator_c       = obdConn.throttle_c  # response = connection.query(RELATIVE_ACCEL_POS, force=True)
+    accelerator_d       = obdConn.accelerator_d  # response = connection.query(RELATIVE_ACCEL_POS, force=True)
+    accelerator_e       = obdConn.accelerator_e  # response = connection.query(RELATIVE_ACCEL_POS, force=True)
+    accelerator_f       = obdConn.accelerator_f  # response = connection.query(RELATIVE_ACCEL_POS, force=True)
+    throttle            = obdConn.throttle_act
 
-    # response = connection.query(RELATIVE_ACCEL_POS, force=True)
+
     # accelerator = response.value
     accelerator = 0
 
@@ -135,7 +167,13 @@ while i < number_of_cycle:
 
     output_data.append([filename,throttle_position, steering_angle, str(speed), \
                         str(fuel_level),str(voltage),str(ambient_temp), \
-                        str(oil_temperature),str(accelerator), \
+                        str(oil_temperature), \
+                        str(accelerator_b), \
+                        str(accelerator_c), \
+                        str(accelerator_d), \
+                        str(accelerator_e), \
+                        str(accelerator_f), \
+                        str(throttle), \
                         str(time_frame), str(time_OBD)])
 
 obdConn.close()

@@ -10,6 +10,6 @@ import glob
 
 
 # show('Before')
-compileall.compile_dir('/Users/cristianku/Documents/PycharmProjects/car-computer-raspberry/obd', force=True)
+compileall.compile_dir('/Users/cristianku/Documents/PycharmProjects/car-computer-raspberry', force=True)
 
 # show('\nAfter')
