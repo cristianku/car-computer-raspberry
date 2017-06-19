@@ -21,17 +21,16 @@ print " Importing sys ...."
 import sys
 print " Importing time ...."
 import time
-print " Importing PiRGBArray ...."
-from picamera.array import PiRGBArray
-print " Importing PiCamera ...."
-from picamera import PiCamera
-
 print " Importing numpy ...."
 import numpy as np
 print " Importing  obd2Reader ...."
 import obd2Reader
 print " .. ok "
 # print str(sys.argv[1])
+from Queue import deque
+
+images_queue = deque()
+
 
 number_of_cycle = int(sys.argv[1])
 print " ################## "
@@ -50,51 +49,19 @@ print " "
 
 
 
-# def obd_speed():
-#     cmd = obd.commands.SPEED  # select an OBD command (sensor)
-#
-#     response = connection.query(cmd)  # send the command, and parse the response
-#
-#     # print(response.value)  # returns unit-bearing values thanks to Pint
-#     # print(response.value.to("mph"))  # user-friendly unit conversions
-#
-#     return response.value
-
-
-# def obd_speed():
-#     connection = obd.OBD()  # auto-connects to USB or RF port
-#     cmd = obd.commands.SPEED  # select an OBD command (sensor)
-#
-#     response = connection.query(cmd)  # send the command, and parse the response
-#
-#     # print(response.value)  # returns unit-bearing values thanks to Pint
-#     # print(response.value.to("mph"))  # user-friendly unit conversions
-#
-#     return response.value
-# Remember !!!!!
-# sudo apt-get install autoconf gettext libtool libjpeg62-dev
-# cd v4l-utils
-# autoreconf -vfi
-# ./configure
-# make
-# sudo make install
-# otherwise the cv2 videocapture will not work with picamera !!!
-# sudo apt-get install v4l-utils
-
 
 print (" Creating obd2Reader .....")
 obdConn = obd2Reader.obd2Reader()
 print ("           ... OK")
 
+import camera
+
+print (" Creating camera .....")
+camera_connection = camera.camera()
 
 # # Initiate video capture for video file
 print (" Initializing video capture")
 # initialize the camera and grab a reference to the raw camera capture
-camera = PiCamera()
-rawCapture = PiRGBArray(camera)
-
-# allow the camera to warmup
-time.sleep(0.1)
 #
 
 i = 0
@@ -121,18 +88,15 @@ print " Starting while ..."
 print " ######"
 print " ######"
 # while cap.isOpened() and i < 100:
-while i < number_of_cycle and obdConn.connected :
+while i < number_of_cycle : #and obdConn.connected :
     i = i + 1
     # time.sleep(.1)
     # Read first frame
     time_before = time.time()
     # grab an image from the camera
-    rawCapture.truncate(0)
-    camera.capture(rawCapture, format="bgr")
-    image = rawCapture.array
-
+    camera_connection.capture()
     time_frame = time.time() - time_before
-    # print " time to grab a new image " + str(time_frame)
+    print " time to grab a new image " + str(time_frame)
 
     filename = 'img/photo_' + str(i)  + '.jpg'
     throttle_position = 0
@@ -159,8 +123,9 @@ while i < number_of_cycle and obdConn.connected :
 
     # print (" speed = " + str(speed) +  " fuel level = " + str(fuel_level)+" file= " + filename) + " time frame " + str(time_frame ) + " time speed" + str(time_OBD)
     time_before= time.time()
-    cv2.imwrite(filename, image)
-    # print "time for writing " + str ( time.time() - time_before)
+    camera_connection.write_image()
+    time_writing = time.time() - time_before
+    print "time for writing " + str ( time_writing)
 
 
     output_data.append([filename,throttle_position, steering_angle, str(speed), \

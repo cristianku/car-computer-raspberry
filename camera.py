@@ -1,33 +1,58 @@
-# import the necessary packages
+print " Importing PiRGBArray ...."
 from picamera.array import PiRGBArray
-import picamera
-import picamera.array
+print " Importing PiCamera ...."
+from picamera import PiCamera
 import time
+import threading
 import cv2
- 
-# initialize the camera and grab a reference to the raw camera capture
-camera = picamera.PiCamera()
-fourcc = cv2.cv.CV_FOURCC('m', 'p', '4', 'v')
 
-vidwrite = cv2.VideoWriter('/home/pi/python/videos/camera.mp4v',fourcc, 15.0, (1280,720),True)
+from Queue import deque
 
 
-# allow the camera to warmup
+class camera():
+    def __init__(self):
+        self.red_light = False
+        self.i = 0
+        self.camera = PiCamera()
+        self.camera.framerate = 30
+        self.camera.resolution = (2592, 1952)
+        # camera.resolution = (800,600)
+        self.camera.iso = 100  # auto
+
+        # camera.start_preview()
+
+        self.rawCapture = PiRGBArray(camera)
+        self.images_queue = deque()
+
+        # allow the camera to warmup
+        time.sleep(0.1)
+
+    def capture(self):
+        self.rawCapture.truncate(0)
+        self.camera.capture(self.rawCapture, use_video_port=True, format="bgr")
+        self.image = self.rawCapture.array
 
 
-camera.start_preview()
-i = 0
-while i < 25:
-    i += 1
-    # grab an image from the camera
-    with picamera.array.PiRGBArray(camera) as stream:
-        camera.capture(stream, format='bgr')
-        # At this point the image is available as stream.array
-        image = stream.array
+    def write_image_to_file(self):
+        self.red_light == True
+        print " -- write_image_to_file "
+        while self.images_queue:
+            print " -------- while  -------"
+            img = self.images_queue.popleft()
+            self.i += 1
+            filename = 'img/photo_' + str(self.i) + '.jpg'
+            print "writing " + filename
+            cv2.imwrite(filename, img)
+        self.red_light == False
 
-    frame2 = cv2.resize(image, None, fx=0.5, fy=0.5,  interpolation=cv2.INTER_LINEAR)  # display the image on screen and wait for a keypress
-    cv2.imwrite("/home/pi/python/imgs/camera_still.jpg", frame2)
-    print " write frame2 "
-    vidwrite.write(frame2)
 
-vidwrite.release()
+    def write_image(self):
+        self.images_queue.append(self.image)
+        if len(self.images_queue) > 10 and self.red_light == False:
+            print " ******** "
+            print len(self.images_queue)
+            self.write_image_to_file()
+            writing = threading.Thread(target=self.write_image_to_file)
+            print " ******** "
+
+    # t_left_led = threading.Thread(target=left_led.turn_on)
