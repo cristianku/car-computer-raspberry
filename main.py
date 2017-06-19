@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 
 
-print str(sys.argv[1])
+# print str(sys.argv[1])
 
 number_of_cycle = int(sys.argv[1])
 print " ################## "
