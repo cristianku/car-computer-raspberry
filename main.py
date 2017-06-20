@@ -32,11 +32,11 @@ from Queue import deque
 images_queue = deque()
 
 
-number_of_cycle = int(sys.argv[1])
-print " ################## "
-print " ##### NUMBER OF CYCLES : " + str(number_of_cycle)
-print " ################## "
-print " "
+# number_of_cycle = int(sys.argv[1])
+# print " ################## "
+# print " ##### NUMBER OF CYCLES : " + str(number_of_cycle)
+# print " ################## "
+# print " "
 
 # from espeak import espeak
 #
@@ -87,9 +87,16 @@ from picamera.array import PiRGBArray
 # rawCapture = PiRGBArray(camera)
 
 from camera import camera
-camera = camera()
+from datetime import date
+import os
+filedir = 'data_from_car/' + time.strftime("%d-%m-%Y-%H.%M.%S") + '/'
+os.makedirs(filedir)
+camera = camera(filedir)
 # allow the camera to warmup
 time.sleep(0.1)
+
+
+
 
 print " ######"
 print " ######"
@@ -113,7 +120,7 @@ while  obdConn.connected :
     # camera.capture(rawCapture, format="bgr")
     # image = rawCapture.array
 
-    filename = 'img/photo_' + str(i)  + '.jpg'
+    filename =  'photo_' + str(i)  + '.jpg'
     throttle_position = 0
     steering_angle = 1
     time_before = time.time()
@@ -177,8 +184,8 @@ while camera.images_queue :
 # # out.release()
 # # cv2.destroyAllWindows()
 print " Import Pandas..."
-import pandas as pd
+from pandas import DataFrame
 
-df = pd.DataFrame(np.array(output_data))
-df.to_csv("car_output_data.csv")
+df = DataFrame(np.array(output_data))
+df.to_csv(filedir + "car_output_data.csv")
 print "car_output_data.csv written"

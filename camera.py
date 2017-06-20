@@ -10,7 +10,7 @@ from Queue import deque
 
 
 class camera():
-    def __init__(self):
+    def __init__(self, filedir):
         print " ********** "
         print " Initializing camera"
         print " ********** "
@@ -32,6 +32,7 @@ class camera():
 
         self.rawCapture = PiRGBArray(self.camera_conn)
         self.images_queue = deque()
+        self.filedir = filedir
 
         # allow the camera to warmup
         time.sleep(0.1)
@@ -46,7 +47,7 @@ class camera():
         while self.images_queue:
             img = self.images_queue.popleft()
             self.i += 1
-            filename = 'img/photo_' + str(self.i) + '.jpg'
+            filename = self.filedir + 'photo_' + str(self.i) + '.jpg'
             if self.i % 5 == 0:
                 print "writing " + filename
             cv2.imwrite(filename, img)
