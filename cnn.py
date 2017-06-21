@@ -64,7 +64,7 @@ classifier.add(Flatten ())
 # Step 4 - Full connection
 classifier.add(Dense(output_dim = 128,activation= 'relu'))
 
-classifier.add(Dense(output_dim = 2,activation= 'softmax')) # --> probability softmax computation
+classifier.add(Dense(output_dim = 3,activation= 'softmax')) # --> probability softmax computation
 
 classifier.compile(optimizer='adam', loss ='categorical_crossentropy', metrics=['accuracy'])
 
@@ -114,7 +114,7 @@ test_set        = test_datagen.flow_from_directory(data_folder + '/test_set',
 classifier.fit_generator(
                     training_set,
                     steps_per_epoch=10,      # number of images per epochs ( per batch )
-                    epochs=2,                #Total number of steps (batches of samples)
+                    epochs=20,                #Total number of steps (batches of samples)
                                               # to yield from generator before declaring one epoch
                                               # finished and starting the next epoch.
                                               # It should typically be equal to the number of unique samples
