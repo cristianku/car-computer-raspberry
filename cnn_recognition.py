@@ -19,28 +19,34 @@ loaded_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=
 
 
 #########
-test_image = image.load_img(data_folder+'other.png', target_size = (64, 64))
+test_image = image.load_img(data_folder+'speed_limit_80.ppm', target_size = (32, 32))
 test_image = image.img_to_array(test_image)
 test_image = np.expand_dims(test_image, axis = 0) # add new dimension, corresponding to the batches
+
 
 result = loaded_model.predict(test_image)
 resultx =  result[0]
 
-# print (resultx)
+print (resultx)
 
 # print result
 
 # print loaded_model.predict_classes
 
-# {'traffic_other': 2, 'traffic_light_green': 0, 'traffic_light_red': 1}
 
+# {'speed_limit_80'     : 3,
+#  'traffic_light_green': 4,
+#  'speed_limit_50'     : 2,
+#  'speed_limit_30'     : 1,
+#  'speed_limit_20'     : 0,
+#  'traffic_light_red'  : 5}
 
-if ( resultx[0] == 1):
-    prediction = 'traffic_light_green'
-elif ( resultx[1] == 1):
-    prediction = 'traffic_light_red'
-elif (resultx[2] == 1):
-    prediction = 'traffic_other'
+if ( resultx[0] == 1):  prediction = 'speed_limit_20'
+elif (resultx[1] == 1): prediction = 'speed_limit_30'
+elif (resultx[2] == 1): prediction = 'speed_limit_50'
+elif (resultx[3] == 1): prediction = 'speed_limit_80'
+elif (resultx[4] == 1): prediction = 'traffic_light_green'
+elif (resultx[5] == 1): prediction = 'traffic_light_red'
 
 
     # if (resultx > 0.8 ):
@@ -49,5 +55,5 @@ elif (resultx[2] == 1):
 #      prediction = 'GREEN'
 #
 print " ****** "
-print (" for image other.png , result = " + prediction)
+print (" for image speed_limit_80.ppm , result = " + prediction)
 print " ****** "
