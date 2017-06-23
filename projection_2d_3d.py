@@ -18,7 +18,7 @@ def p_img (p,f):
         #  [50]
         #  [1]]
 
-    print p_hom
+    # print p_hom
     p_proj = np.dot(A ,p_hom)
     # RESULT example :
         # [[10000]
@@ -26,8 +26,16 @@ def p_img (p,f):
         #  [50]]
         #
     ## convert back to non-homogeneus coordinates and return
-    p_img = [p_proj[0]/p_proj[2], p_proj[1]/p_proj[2]]
+    p_img = (int(p_proj[0]/p_proj[2]), int(p_proj[1]/p_proj[2]))
     return p_img
 p = [200, 100, 50]
+f = 50
+print (p_img(p,f))
+
+p = [-350, 150, 50]
+f = 50
+print (p_img(p,f))
+
+p = [200, 100, 100]
 f = 50
 print (p_img(p,f))
