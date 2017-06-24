@@ -9,6 +9,8 @@ for the swap memory and return "arm" in cc_configure.bzl:
     https://github.com/samjabrahams/tensorflow-on-raspberry-pi/blob/master/GUIDE.md#2-install-a-memory-drive-as-swap-for-compiling
 
 For go installation:
+    sudo apt-get install golang +
+    export GOPATH=/home/user/gocode
     https://dave.cheney.net/2012/09/25/installing-go-on-the-raspberry-pi
 -------
 Already compiled bazel:
