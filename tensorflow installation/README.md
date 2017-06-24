@@ -17,6 +17,20 @@ Already compiled bazel:
 
 ----
 
+Git upgrade to last version
+( if you are gettin error abort: HTTP Error 406: Not Acceptable
+ from go installation )
+
+sudo apt-get install gettext
+wget https://www.kernel.org/pub/software/scm/git/git-2.3.0.tar.xz
+tar -xvf git-2.3.0.tar.xz
+cd git-2.3.0/
+./configure --prefix=/usr --with-gitconfig=/etc/gitconfig
+make
+sudo make install
+git --version
+
+
 
 --------
 go installation :
