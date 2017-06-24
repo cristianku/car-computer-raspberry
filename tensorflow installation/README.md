@@ -2,16 +2,15 @@ COMPILATION FOR RASPBERRY PI ZERO
 
 links I have used
 
-for last version of Tensorflow and bazel:
+for last version of  bazel:
     https://blog.meinside.pe.kr/TensorFlow-and-Go-on-Raspberry-Pi/
 
 for the swap memory and return "arm" in cc_configure.bzl:
     https://github.com/samjabrahams/tensorflow-on-raspberry-pi/blob/master/GUIDE.md#2-install-a-memory-drive-as-swap-for-compiling
 
-For go installation:
-    sudo apt-get install golang +
-    export GOPATH=/home/user/gocode
-    https://dave.cheney.net/2012/09/25/installing-go-on-the-raspberry-pi
+for tensorflow inst`llation
+    https://github.com/samjabrahams/tensorflow-on-raspberry-pi/blob/master/GUIDE.md#2-install-a-memory-drive-as-swap-for-compiling
+
 -------
 Already compiled bazel:
  https://www.dropbox.com/s/ki5iux565m3ea17/bazel%20raspberry%20pi%20zero.gz?dl=0
