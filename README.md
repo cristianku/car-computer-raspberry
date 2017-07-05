@@ -19,8 +19,6 @@ The aim of this project is to automatically detect objects on the road, and give
 TRAFFIC SIGN TRAINING:
 
 Database used for training : 
-
-#http://benchmark.ini.rub.de/?section=gtsrb&subsection=dataset#Downloads
-# training dataset: http://benchmark.ini.rub.de/Dataset/GTSRB_Final_Training_Images.zip
-# test dataset    : http://benchmark.ini.rub.de/Dataset/GTSRB_Final_Test_Images.zip
+training dataset: http://benchmark.ini.rub.de/Dataset/GTSRB_Final_Training_Images.zip
+test dataset    : http://benchmark.ini.rub.de/Dataset/GTSRB_Final_Test_Images.zip
 
